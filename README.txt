@@ -18,4 +18,8 @@ http://blog.csdn.net/kaku21/article/details/42489953
 http://docs.sqlalchemy.org/en/latest/orm/query.html?highlight=filter_by#sqlalchemy.orm.query.Query.first
 https://github.com/miguelgrinberg/REST-auth/blob/master/requirements.txt
 html template:
-https://www.quora.com/How-do-I-display-a-list-in-HTML5-from-Python-code-using-Flask
+http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates
+
+A Python SVG Charts Creator
+
+pip install pygal

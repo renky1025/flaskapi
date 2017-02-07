@@ -219,9 +219,42 @@ def iterate_cursor():
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
+@app.route("/")
+def home():
+    return "Tutsplus : Welcome to PyGal Charting Library !! "
 
+# -------------------------------------------
+# Charting route which displays the bar chart
+# -------------------------------------------
+import pygal
+from pygal.style import Style
+import json
+import time
+from flask import render_template
+
+@app.route("/bar")
+def bar():
+    with open('bar.json','r') as bar_file:
+        data = json.load(bar_file)
+    custom_style = Style(
+        colors=('#991515','#1cbc7c'),
+        background='#d2ddd9'
+        )
+    
+    chart = pygal.Bar(style = custom_style)
+    mark_list = [x['mark'] for x in data]
+    chart.add('Annual Mark List',mark_list)
+    tourn_list = [x['tournament'] for x in data]
+    chart.add('Tournament Score',tourn_list)
+
+    chart.x_labels = [x['year'] for x in data]
+    chart.render_to_file('static/images/bar_chart.svg')
+    img_url = 'static/images/bar_chart.svg?cache=' + str(time.time())
+    return render_template('app.html',image_url = img_url)
 
 if __name__ == '__main__':
     if not os.path.exists('db.mysql'):
         db.create_all()
     app.run(debug=True)
+
+
