@@ -9,6 +9,10 @@ from datetime import datetime
 
 # initialization
 app = Flask(__name__)
+
+#指定模板目录
+#app = Flask(__name__, template_folder='template')
+
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:100200@localhost/pythontest'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
@@ -240,7 +244,7 @@ def bar():
         colors=('#991515','#1cbc7c'),
         background='#d2ddd9'
         )
-    
+
     chart = pygal.Bar(style = custom_style)
     mark_list = [x['mark'] for x in data]
     chart.add('Annual Mark List',mark_list)
