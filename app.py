@@ -14,7 +14,7 @@ app = Flask(__name__)
 #app = Flask(__name__, template_folder='template')
 
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:100200@localhost/pythontest'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:******@localhost/pythontest'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # extensions
