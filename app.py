@@ -6,9 +6,13 @@ from flask_httpauth import HTTPBasicAuth
 from passlib.hash import sha256_crypt
 import uuid
 from datetime import datetime
+from flask_cors import CORS
+
 
 # initialization
 app = Flask(__name__)
+CORS(app)
+#cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 #指定模板目录
 #app = Flask(__name__, template_folder='template')
@@ -86,19 +90,24 @@ def verify_password(username_or_token, password):
 
 
 @app.route('/api/users', methods=['POST'])
+@cross_origin()  # Route specific CORS via decorator
 def new_user():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    if username is None or password is None:
-        abort(400)    # missing arguments
-    if User.query.filter_by(username=username).first() is not None:
-        abort(400)    # existing user
-    user = User(username=username)
-    user.hash_password(password)
-    db.session.add(user)
-    db.session.commit()
-    return (jsonify({'username': user.username}), 201,
-            {'Location': url_for('get_user', id=user.id, _external=True)})
+    if request.headers['Content-Type'] == 'application/json':
+
+        username = request.json.get('username')
+        password = request.json.get('password')
+        if username is None or password is None:
+            abort(400)    # missing arguments
+        if User.query.filter_by(username=username).first() is not None:
+            abort(400)    # existing user
+        user = User(username=username)
+        user.hash_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return (jsonify({'username': user.username}), 201,
+                {'Location': url_for('get_user', id=user.id, _external=True)})
+    else:
+        return (jsonify({'message': "no json found in body. please input json data in body.", "ercode": 1}), 400)
 
 
 @app.route('/api/users/<int:id>')
@@ -197,6 +206,7 @@ def update_task(task_id):
 
 @app.route('/todo/api/v1/tasks/<string:task_id>', methods=['DELETE'])
 def delete_task(task_id):
+    #auth = request.headers.get('Authorization') # get data from headers 
     task_dict = Tasks.query.filter(Tasks.id==task_id)
     if not task_dict:
         abort(404)
