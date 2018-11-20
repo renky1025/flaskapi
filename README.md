@@ -1,11 +1,9 @@
 ## Install libary
 * basic libary: `pip install Flask`
-* `pip install Flask-HTTPAuth`
-* connect mysql: `pip install Flask-SQLAlchemy`
-* `pip install passlib`
+* for password : `pip install passlib`
 * get uuid: `pip install uuid`
 * format datetimes: `pip install datetime`
-* support cross domain api: `pip install -U flask-cors`
+* support cross domain api: `pip install flask_cors`
 
 ## details 
 * curl -u test:python -i -X GET http://127.0.0.1:5000/api/resource
@@ -23,3 +21,10 @@
 
 ## A Python SVG Charts Creator
 * `pip install pygal`
+
+## Docker
+* build docker image:
+`docker build -t flask-tutorial .`
+
+* run docker image:
+`docker run -p 8080:8080 flask-tutorial` or run in backend `docker run -p 8080:8080 -d flask-tutorial`
