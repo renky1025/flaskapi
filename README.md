@@ -4,6 +4,7 @@
 * get uuid: `pip install uuid`
 * format datetimes: `pip install datetime`
 * support cross domain api: `pip install flask_cors`
+* support monogodb: `pip install flask_pymongo`
 
 ## details 
 * curl -u test:python -i -X GET http://127.0.0.1:5000/api/resource
