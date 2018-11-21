@@ -2,4 +2,5 @@ Flask
 uuid 
 datetime 
 flask_cors
+isodate
 flask_pymongo

@@ -1,13 +1,40 @@
 from flask import Flask, jsonify, abort, make_response, request, json, g, url_for
-from bson import ObjectId # For ObjectId to work
+from bson import json_util
+from bson.json_util import dumps
+import json
+from bson import ObjectId
 from pymongo import MongoClient
 import os
 
 app = Flask(__name__)
-client = MongoClient("mongodb://192.168.3.40:27017") #host uri
+
+client = MongoClient("mongodb://127.0.0.1:27017") #host uri
 db = client.mymongodb #Select the database
 todos = db.todo #Select the collection name
-users = db.users
+users = db.users #Select the collection name
+
+def convertMongoDataToJson(doclist):
+    docs = [doc for doc in doclist]
+    if docs and len(docs)>0:
+        for doc in docs:
+            doc["_id"] = str(doc["_id"])
+    return docs
+
+
+def convertResponseJson(data, errcode = 0, message = "Ok"):
+    return {
+        'data': data,
+        "status": {
+            "code": errcode,
+            "message": message
+        }
+        # "paging": {
+        #     "offset": 0,
+        #     "limit": 10,
+        #     "total": 10
+        # }
+    }
+
 
 @app.route('/user', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def user():
@@ -43,12 +70,23 @@ def user():
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
 
-@app.route("/list")
-def lists ():
+@app.route("/list/users")
+def userlists ():
+    #Display the all Tasks
+    offset = request.args.get('offset') or 0
+    limit = request.args.get('limit') or 10
+    users_l = users.find().skip(int(offset)).limit(int(limit))
+    docs = convertMongoDataToJson(users_l)
+    a1="active"
+    return jsonify(convertResponseJson(docs)), 200
+
+@app.route("/list/todos")
+def todolists ():
     #Display the all Tasks
     todos_l = todos.find()
+    docs = convertMongoDataToJson(todos_l)
     a1="active"
-    return jsonify({'data':todos_l, 'status': {'code':0, 'message': ''}}), 200
+    return jsonify(convertResponseJson(docs)), 200
 
 
 @app.route("/")
@@ -56,8 +94,9 @@ def lists ():
 def tasks ():
     #Display the Uncompleted Tasks
     todos_l = todos.find({"done":"no"})
+    docs = [doc for doc in todos_l]
     a2="active"
-    return jsonify({'data':todos_l, 'status': {'code':0, 'message': ''}}), 200
+    return jsonify({'data': docs, 'status': {'code':0, 'message': ''}}), 200
 
 
 @app.route("/completed")
@@ -128,4 +167,4 @@ def search():
  
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)
